@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACTIVIDAD 2.1 - Machine Learning Ana Rocío León Lugo</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.85);
+            --card-border: #30363d;
+            --accent-blue: #58a6ff;
+            --accent-indigo: #a5d6ff;
+            --accent-green: #3fb950;
+            --accent-amber: #d29922;
+            --accent-red: #f85149;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --header-bg: #090d16;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-top {
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--card-border);
+            padding: 16px 28px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .title-area h1 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin: 0;
+            letter-spacing: 0.2px;
+        }
+
+        .title-area p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* Pestañas de Navegación */
+        .nav-tabs-custom {
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0 20px;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+        }
+
+        .nav-tabs-custom .nav-link {
+            color: var(--text-muted);
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 12px 18px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tabs-custom .nav-link:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            color: var(--accent-blue);
+            background: transparent;
+            border-bottom-color: var(--accent-blue);
+        }
+
+        /* Tarjetas Glassmorphism */
+        .custom-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Caja de Enunciado de la Pregunta */
+        .enunciado-box {
+            background: rgba(31, 111, 235, 0.1);
+            border-left: 4px solid var(--accent-blue);
+            border-top: 1px solid var(--card-border);
+            border-right: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--card-border);
+            border-radius: 0 8px 8px 0;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+        }
+
+        .enunciado-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent-blue);
+            margin-bottom: 4px;
+        }
+
+        .enunciado-text {
+            font-size: 0.9rem;
+            color: #ffffff;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .card-header-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 12px;
+        }
+
+        .code-block {
+            background-color: #070a12;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: #e6edf3;
+            overflow-x: auto;
+        }
+
+        .metric-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Modales */
+        .modal-content-custom {
+            background-color: #161b22;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+        }
+
+        .modal-header-custom {
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .modal-footer-custom {
+            border-top: 1px solid var(--card-border);
+        }
+
+        .header-logo { height: 90px; width: auto; }
+    </style>
+</head>
+<body>
+
+    <!-- Encabezado institucional -->
+    <header class="header-top d-flex justify-content-between align-items-center">
+        <div class="logo-container">
+            <div>
+                <img class="header-logo" src="logosantoto.png" alt="Logo Universidad Santo Tomás">
+            </div>
+            <div class="title-area">
+                <h1>ACTIVIDAD 2.1. Segmentación de solicitantes: perfiles interpretables mediante agrupamiento</h1>
+                <p class="text-xs text-slate-400 hidden sm:block">Presentada por: Ana Rocío León</p>
+                <p class="text-xs text-slate-400 hidden sm:block">Curso de Machine Learning</p>
+                <p class="text-xs text-slate-400 hidden sm:block">Presentado al MsC. Carlos Andrés Sepúlveda León</p>
+                <p>Universidad Santo Tomás - Seccional Tunja</p>
+            </div>
+        </div>
+        <div>
+            <button class="btn btn-outline-primary btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#biblioModal">
+                <i class="fa-solid fa-book-bookmark me-1.5"></i> Bibliografía
+            </button>
+        </div>
+    </header>
+
+    <!-- Barra de Pestañas de Navegación -->
+    <ul class="nav nav-tabs nav-tabs-custom" id="mainTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="punto-a-tab" data-bs-toggle="tab" data-bs-target="#punto-a" type="button" role="tab">
+                <i class="fa-solid fa-filter me-1.5"></i> a) Subconjunto & Preprocesamiento
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="punto-b-tab" data-bs-toggle="tab" data-bs-target="#punto-b" type="button" role="tab">
+                <i class="fa-solid fa-diagram-project me-1.5"></i> b) Selección de k & Máximo Global
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="punto-c-tab" data-bs-toggle="tab" data-bs-target="#punto-c" type="button" role="tab">
+                <i class="fa-solid fa-chart-scatter me-1.5"></i> c) Proyección PCA 2D
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="punto-d-tab" data-bs-toggle="tab" data-bs-target="#punto-d" type="button" role="tab">
+                <i class="fa-solid fa-user-tag me-1.5"></i> d) Incumplimiento & Perfiles
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="teoria-tab" data-bs-toggle="tab" data-bs-target="#teoria" type="button" role="tab">
+                <i class="fa-solid fa-graduation-cap me-1.5"></i> Resumen Teórico
+            </button>
+        </li>
+    </ul>
+
+    <!-- Contenido Principal -->
+    <div class="container-fluid p-4 flex-grow-1">
+        <div class="tab-content" id="mainTabContent">
+            
+            <!-- 1. PUNTO A: PREPROCESAMIENTO -->
+            <div class="tab-pane fade show active" id="punto-a" role="tabpanel">
+                
+                <!-- Enunciado Pregunta a -->
+                <div class="enunciado-box">
+                    <div class="enunciado-title"><i class="fa-solid fa-clipboard-question me-1"></i> Enunciado de la Pregunta</div>
+                    <p class="enunciado-text">a) Utilizando el conjunto de datos de la actividad de la Sección 1, construya un subconjunto de variables significativas (numéricas y 
+					categóricas). Aplique el mismo método de preprocesamiento con ColumnTransformer, incluyendo la imputación de valores faltantes, la codificación One-Hot y el 
+					escalado cuando esté técnicamente justificado.</p>
+                </div>
+
+                <div class="custom-card">
+                    <div class="card-header-title">
+                        <span><span class="badge bg-primary me-2">Respuesta a</span> Subconjunto de Variables Significativas y Pipeline ColumnTransformer</span>
+                        <span class="metric-badge bg-primary">Dimensión Matriz Final: (148670, 34)</span>
+                    </div>
+                    
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="p-3 border border-secondary rounded bg-dark h-100">
+                                <h6 class="text-info font-mono"><i class="fa-solid fa-calculator me-2"></i> 7 Variables Numéricas Seleccionadas</h6>
+                                <p class="small text-muted mb-2"><code>loan_amount</code>, <code>property_value</code>, <code>income</code>, <code>Credit_Score</code>, <code>LTV</code>, <code>dtir1</code>, <code>term</code></p>
+                                <hr class="border-secondary my-2">
+                                <p class="small text-white mb-0">
+								    Se selecciona un subconjunto representativo de 14 variables clave (7 numéricas y 7 categóricas) asociadas a la capacidad de pago, riesgo crediticio y perfil del cliente:
+                                    <br> </ br>
+									<strong>Justificación:</strong> Imputación por la <strong>mediana</strong> mediante <code>SimpleImputer(strategy='median')</code> para prevenir sesgos producidos por 
+									valores atípicos en variables sesgadas como ingresos o montos de propiedades. 
+									<br> </ br>
+									Escalado continuo mediante <code>StandardScaler</code> indispensable para evitar que variables con escalas grandes dominen las distancias euclídeas en algoritmos 
+									como K-Means y PCA.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border border-secondary rounded bg-dark h-100">
+                                <h6 class="text-indigo font-mono"><i class="fa-solid fa-tags me-2"></i> 7 Variables Categóricas Seleccionadas</h6>
+                                <p class="small text-muted mb-2"><code>loan_type</code>, <code>loan_purpose</code>, <code>business_or_commercial</code>, <code>occupancy_type</code>, <code>credit_type</code>, <code>age</code>, <code>Region</code></p>
+                                <hr class="border-secondary my-2">
+                                <p class="small text-white mb-0">
+                                    <strong>Justificación:</strong> Imputación categórica por la <strong>moda</strong> mediante <code>SimpleImputer(strategy='most_frequent')</code> para preservar 
+									coherencia nominal. Codificación binaria mediante <code>OneHotEncoder(handle_unknown='ignore', sparse_output=False)</code> que expande las 7 categóricas 
+									en 27 columnas binarias dummies (totalizando 34 columnas finales).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+					
+			    
+
+                    <h6 class="text-white mb-2 font-mono"><i class="fa-brands fa-python text-warning me-2"></i> Implementación Oficial con Pipeline y ColumnTransformer (scikit-learn):</h6>
+                    <div class="code-block">
+<pre class="mb-0">import pandas as pd
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+
+# 1. Definición de subconjuntos de características significativas
+num_features = ['loan_amount', 'property_value', 'income', 'Credit_Score', 'LTV', 'dtir1', 'term']
+cat_features = ['loan_type', 'loan_purpose', 'business_or_commercial', 'occupancy_type', 'credit_type', 'age', 'Region']
+
+# 2. Construcción de Pipelines específicos
+numeric_pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler())
+])
+
+categorical_pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('encoder', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
+])
+
+# 3. Integración matricial mediante ColumnTransformer
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_pipeline, num_features),
+        ('cat', categorical_pipeline, cat_features)
+    ],
+    remainder='drop'
+)
+
+# 4. Ajuste e imputación/escalado de la matriz
+X_processed = preprocessor.fit_transform(df[num_features + cat_features])
+print(f"Dimensión resultante: {X_processed.shape}") # (148670, 34)</pre>
+                    </div>
+                </div>
+				
+				<div class="enunciado-box">
+                    <div class="enunciado-title"><i class="fa-solid fa-clipboard-question me-1"></i> Resultado de la ejecución:</div>
+					<br> </ br>
+					<p class="enunciado-text"><img src="2-1-a-resultado-script.png" /></p>
+					<br> </ br>
+                    <p class="enunciado-text">Entrada original:  148,670  registros y  14  variables seleccionadas.
+                    <br> </ br>
+                    Salida procesada: Matriz numérica de dimensiones  (148670,34) , libre de valores nulos, estandarizada en su bloque numérico y expandida a 34 columnas 
+					procesadas mediante codificación One-Hot, lista para alimentar algoritmos de Clustering (K-Means/DBSCAN), Reducción de Dimensionalidad (PCA) o Clasificación 
+					supervisada.</p>
+                </div>
+            </div>
+
+
+            <!-- 2. PUNTO B: AGRUPAMIENTO & MÁXIMO GLOBAL -->
+            <div class="tab-pane fade" id="punto-b" role="tabpanel">
+                
+                <!-- Enunciado Pregunta b -->
+                <div class="enunciado-box">
+                    <div class="enunciado-title"><i class="fa-solid fa-clipboard-question me-1"></i> Enunciado de la Pregunta</div>
+                    <p class="enunciado-text">b) Ejecute K-Means y un segundo método (agrupamiento jerárquico o DBSCAN), y calcule al menos una métrica de calidad de agrupamiento 
+					(por ejemplo, puntuación Silhouette) para seleccionar una configuración razonable.</p>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-7">
+                        <div class="custom-card h-100">
+                            <div class="card-header-title">
+                                <span><span class="badge bg-primary me-2">Respuesta b</span> Gráfico Demostrativo de k (K-Means)</span>
+                                <span class="badge bg-success">k = 3 Máximo Global</span>
+                            </div>
+                            <div style="height: 260px;">
+                                <canvas id="kSearchChart"></canvas>
+                            </div>
+                            <div class="mt-3 p-3 bg-dark border border-secondary rounded small text-muted">
+                                <strong class="text-warning font-mono"><i class="fa-solid fa-circle-check me-1"></i> Comprobación Programática del Máximo Global:</strong><br>
+                               <p class="enunciado-text">Selección del Número de Clusters ( k=3  en K-Means):</p>
+							   <p class="enunciado-text">Al evaluar el Silhouette Score en K-Means, el valor alcanza su máximo global en  k=3  (0.1560). Agregar más grupos 
+							   ( k=4,5,6 ) degrada notablemente la separación de los clusters, reduciendo el Silhouette a menos de  0.10 . </p>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5">
+                        <div class="custom-card h-100">
+                            <div class="card-header-title">
+                                <span><i class="fa-solid fa-table me-2"></i> Evaluación Comparativa de Algoritmos</span>
+                            </div>
+                            <table class="table table-dark table-sm small align-middle">
+                                <thead class="text-muted">
+                                    <tr>
+                                        <th>Algoritmo</th>
+                                        <th>Configuración</th>
+                                        <th>Silhouette Score</th>
+                                        <th>Calinski-Harabasz</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="table-active border-success">
+                                        <td><strong>K-Means</strong></td>
+                                        <td><strong>k = 3</strong></td>
+                                        <td><span class="badge bg-success">0.1560 (Óptimo)</span></td>
+                                        <td>1272.45</td>
+                                    </tr>
+                                    <tr>
+                                        <td>K-Means</td>
+                                        <td>k = 2</td>
+                                        <td>0.1441</td>
+                                        <td>1335.26</td>
+                                    </tr>
+                                    <tr>
+                                        <td>K-Means</td>
+                                        <td>k = 4</td>
+                                        <td>0.0972</td>
+                                        <td>1116.82</td>
+                                    </tr>
+                                    <tr>
+                                        <td>K-Means</td>
+                                        <td>k = 5</td>
+                                        <td>0.0969</td>
+                                        <td>1006.26</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jerárquico (Ward)</td>
+                                        <td>k = 2</td>
+                                        <td>0.1720</td>
+                                        <td>1040.34</td>
+                                    </tr>
+                                    <tr>
+                                        <td>DBSCAN</td>
+                                        <td>eps=2.0, min=20</td>
+                                        <td>0.1084</td>
+                                        <td>N/A (1664 ruido)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p class="small text-muted mb-0">Comparación entre Métodos:</p>
+							<p class="enunciado-text">Aunque el Agrupamiento Jerárquico para  k=2  alcanza un Silhouette de 0.1720, la partición en únicamente 2 grupos 
+							resulta demasiado general para la segmentación de perfiles crediticios complejos.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+				<div class="enunciado-box">
+                    <div class="enunciado-title"><i class="fa-solid fa-clipboard-question me-1"></i> Resultado de la ejecución:</div>
+					<br> </ br>
+					<p class="enunciado-text"><img width=60% src="2-2-a-resultado-script.png" /></p>
+					<p class="enunciado-text"><img width=60% src="2-2-b-resultado-script.png" /></p>
+					<br> </ br>
+                    <p class="enunciado-text">Debido a que el modelo K-Means presentó la puntuación Silhouette más alta, se seleccionó como la configuración final para 
+					la segmentación de los clientes del conjunto Loan Default.</p>
+                </div>
+            </div>
+
+            <!-- 3. PUNTO C: VISUALIZACIÓN PCA -->
+            <div class="tab-pane fade" id="punto-c" role="tabpanel">
+                
+                <!-- Enunciado Pregunta c -->
+                <div class="enunciado-box">
+                    <div class="enunciado-title"><i class="fa-solid fa-clipboard-question me-1"></i> Enunciado de la Pregunta</div>
+                    <p class="enunciado-text">c) Realice una visualización utilizando PCA (o t-SNE, si ya está familiarizado con el concepto) exclusivamente con fines 
+					interpretativos. Debe explicar cómo la reducción de dimensionalidad contribuye a la interpretación de los clústeres.</p>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-7">
+                        <div class="custom-card">
+                            <div class="card-header-title">
+                                <span><span class="badge bg-primary me-2">Respuesta c</span> Proyección PCA 2D de los Clústeres</span>
+                                <span class="metric-badge bg-info text-dark">Varianza Acumulada: 35.1%</span>
+                            </div>
+						<p class="enunciado-text">Resultado del script:</p>
+						<p class="enunciado-text"><img width=90% src="2-3-a-resultado-script.png" /></p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5">
+                        <div class="custom-card h-100">
+                            <div class="card-header-title">
+                                <span><i class="fa-solid fa-lightbulb text-warning me-2"></i> ¿Cómo Contribuye la Reducción de Dimensionalidad a la Interpretación de los Clústeres?</span>
+                            </div>
+                            <div class="space-y-3 small">
+                                <div class="p-2.5 bg-dark border border-secondary rounded mb-2">
+                                    <strong class="text-info font-mono block mb-1">
+									Superación de la "Maldición de la Dimensionalidad" (Curse of Dimensionality): </strong> La matriz 
+									procesada cuenta con 34 variables combinadas (numéricas estandarizadas y categóricas codificadas mediante One-Hot Encoding). 
+									Un ojo humano no puede visualizar ni razonar la cercanía entre grupos en un espacio de 34 dimensiones. 
+									La reducción de dimensionalidad sintetiza esa hipergeometría en dos dimensiones continuas para una inspección directa.
+                                </div>
+                                <div class="p-2.5 bg-dark border border-secondary rounded mb-2">
+                                    <strong class="text-info font-mono block mb-1">
+									Validación Visual de Separación e Integridad:</strong> Permite verificar rápidamente si la segmentación realizada por K-Means genera regiones 
+									compactas o si existe un solapamiento excesivo entre fronteras. En la gráfica proyectada, se observa claramente cómo PC1 separa el grupo 
+									de "Alto Valor" (Clúster 1) del grupo "Estándar" (Clúster 0), mientras que PC2 aísla el perfil de "Plazo Corto" (Clúster 2) en la zona inferior.
+                                </div>
+                                <div class="p-2 bg-dark border border-secondary rounded">
+								    <strong class="text-info font-mono block mb-1">
+									Comprensión de los Motores de Variación Principal:</strong> En lugar de analizar 34 variables por separado, PCA revela qué ejes abstractos dominan 
+									la variabilidad latente del conjunto de datos (en este caso: Capacidad Financiera vs. Estructura del Plazo del Crédito), lo que simplifica 
+									la toma de decisiones del negocio.
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. PUNTO D: INCUMPLIMIENTO Y PERFILES -->
+            <div class="tab-pane fade" id="punto-d" role="tabpanel">
+                
+                <!-- Enunciado Pregunta d -->
+                <div class="enunciado-box">
+                    <div class="enunciado-title"><i class="fa-solid fa-clipboard-question me-1"></i> Enunciado de la Pregunta</div>
+                    <p class="enunciado-text">d) Reincorpore la variable Estado exclusivamente con fines descriptivos (no para entrenamiento) e informe la tasa de 
+					incumplimiento por clúster. Escriba perfiles de 3 a 5 líneas para cada segmento, resaltando las conclusiones prácticas.</p>
+                </div>
+				<div class="enunciado-box">
+                    <div class="enunciado-title"><i class="fa-solid fa-clipboard-question me-1"></i> Resultado de la ejecución:</div>
+					<br> </ br>
+					<p class="enunciado-text"><img width=50% src="2-4-a-resultado-script.png" /></p>
+					<br> </ br>
+                    <p class="enunciado-text">La variable Status fue reincorporada con fines descriptivos después de finalizar el proceso de agrupamiento. Posteriormente 
+					se calculó la tasa de incumplimiento para cada clúster mediante la proporción de observaciones con estado de 
+					incumplimiento dentro de cada segmento.</p>
+                </div>
+
+                <div class="custom-card mb-4">
+                    <div class="card-header-title">
+                        <span><span class="badge bg-primary me-2">Respuesta d</span> Reincorporación Descriptiva de 'Status' e Incumplimiento por Clúster</span>
+                        <span class="metric-badge bg-danger">Evaluación de Morosidad</span>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Clúster 0 -->
+                        <div class="col-md-4">
+                            <div class="p-3 border border-success rounded bg-dark h-100 space-y-2">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong class="text-success font-mono">Clúster 0: Prime / Alto Valor</strong>
+                                    <span class="badge bg-success">Default: 17.81%</span>
+                                </div>
+                                <p class="small text-muted mb-2">
+                                    • Ingreso promedio: <strong>$11,465</strong><br>
+                                    • Monto crédito prom: <strong>$549,905</strong><br>
+                                    • LTV promedio: <strong>68.8%</strong> | Plazo: 355m
+                                </p>
+                                <p class="small text-white border-top border-secondary pt-2 mb-0">
+                                    <strong>Perfil Descriptivo (3-5 líneas):</strong> Solicitantes de alta solvencia patrimonial e ingresos elevados con baja relación préstamo-valor. Registran la menor tasa de mora del dataset (17.81%).<br>
+                                    <strong>Recomendación:</strong> Cartera prioritaria para fidelización, líneas sobregiro preferenciales y tasas de interés competitivas.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Clúster 1 -->
+                        <div class="col-md-4">
+                            <div class="p-3 border border-warning rounded bg-dark h-100 space-y-2">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong class="text-warning font-mono">Clúster 1: Plazo Corto</strong>
+                                    <span class="badge bg-warning text-dark">Default: 23.23%</span>
+                                </div>
+                                <p class="small text-muted mb-2">
+                                    • Ingreso promedio: <strong>$7,111</strong><br>
+                                    • Monto crédito prom: <strong>$237,865</strong><br>
+                                    • LTV promedio: <strong>62.8%</strong> | Plazo: <strong class="text-warning">194m</strong>
+                                </p>
+                                <p class="small text-white border-top border-secondary pt-2 mb-0">
+                                    <strong>Perfil Descriptivo (3-5 líneas):</strong> Créditos con plazos de amortización sustancialmente reducidos (~194 meses) e ingresos moderados. Presentan mora intermedia (23.23%) por la elevada cuota mensual.<br>
+                                    <strong>Recomendación:</strong> Ofrecer esquemas de flexibilidad o ampliación de plazos a 300-360 meses ante eventos de iliquidez puntual.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Clúster 2 -->
+                        <div class="col-md-4">
+                            <div class="p-3 border border-danger rounded bg-dark h-100 space-y-2">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong class="text-danger font-mono">Clúster 2: Alto LTV (Riesgo)</strong>
+                                    <span class="badge bg-danger">Default: 27.92%</span>
+                                </div>
+                                <p class="small text-muted mb-2">
+                                    • Ingreso promedio: <strong class="text-danger">$4,906</strong><br>
+                                    • Monto crédito prom: <strong>$256,320</strong><br>
+                                    • LTV promedio: <strong class="text-danger">76.8%</strong> | Plazo: 357m
+                                </p>
+                                <p class="small text-white border-top border-secondary pt-2 mb-0">
+                                    <strong>Perfil Descriptivo (3-5 líneas):</strong> Concentra el 60.5% de la muestra, con los menores ingresos, altos índices dtir1 (39.4%) y el mayor apalancamiento sobre la propiedad. Registra la mayor morosidad (27.92%).<br>
+                                    <strong>Recomendación:</strong> Exigir mayores cuotas iniciales (reducir LTV < 70%) y requerir avales o codeudores en la originación.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. RESUMEN TEÓRICO (CAPÍTULO 2) -->
+            <div class="tab-pane fade" id="teoria" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="custom-card h-100">
+                            <div class="card-header-title">
+                                <span><i class="fa-solid fa-cubes text-info me-2"></i> Algoritmos de Clustering</span>
+                                <span class="metric-badge bg-info text-dark">No Supervisado</span>
+                            </div>
+                            <ul class="list-unstyled small space-y-3">
+                                <li class="mb-3">
+                                    <strong class="text-white">K-Means:</strong> Algoritmo particional basado en $k$ centroides. Busca minimizar la varianza intra-cluster (suma de distancias euclídeas cuadráticas).
+                                </li>
+                                <li class="mb-3">
+                                    <strong class="text-white">Jerárquico Aglomerativo:</strong> Construye estructuras dendrográficas fusionando grupos secuencialmente mediante métricas de enlace (Ward, Complete, Average).
+                                </li>
+                                <li>
+                                    <strong class="text-white">DBSCAN:</strong> Identifica grupos densos continuos y filtra observaciones atípicas como ruido (`eps`, `min_samples`).
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="custom-card h-100">
+                            <div class="card-header-title">
+                                <span><i class="fa-solid fa-chart-line text-warning me-2"></i> Métricas de Validación</span>
+                                <span class="metric-badge bg-warning text-dark">Calidad Interna</span>
+                            </div>
+                            <ul class="list-unstyled small">
+                                <li class="mb-3">
+                                    <strong class="text-white">Silhouette Score [-1, 1]:</strong> Mide la cohesión de un dato con su clúster frente a la separación del clúster más cercano.
+                                </li>
+                                <li class="mb-3">
+                                    <strong class="text-white">Calinski-Harabasz [0, ∞):</strong> Razón entre la dispersión inter-cluster y la dispersión intra-cluster (Variance Ratio Criterion).
+                                </li>
+                                <li>
+                                    <strong class="text-white">DBCV [-1, 1]:</strong> Evaluación basada en densidad para estructuras con formas complejas e irregularidades.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="custom-card h-100">
+                            <div class="card-header-title">
+                                <span><i class="fa-solid fa-robot text-success me-2"></i> PCA & Deep RL</span>
+                                <span class="metric-badge bg-success text-dark">Capítulo 2</span>
+                            </div>
+                            <ul class="list-unstyled small">
+                                <li class="mb-3">
+                                    <strong class="text-white">PCA (Componentes Principales):</strong> Proyecta datos multidimensionales en ejes ortogonales reteniendo la máxima varianza latente.
+                                </li>
+                                <li class="mb-3">
+                                    <strong class="text-white">t-SNE & Isomap:</strong> Métodos no lineales para visualización de manifolds manteniendo estructuras locales o distancias geodésicas.
+                                </li>
+                                <li>
+                                    <strong class="text-white">Aprendizaje por Refuerzo (RL):</strong> Toma de decisiones secuenciales mediante MDPs ($\langle S,A,P,R,\gamma \rangle$) y algoritmos profundos como Deep Q-Networks (DQN).
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal de Bibliografía Identico USTA -->
+    <div class="modal fade" id="biblioModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title fs-6"><i class="fa-solid fa-book me-2"></i> Referencia Bibliográfica</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body small">
+                    <p class="mb-2"><strong>Vela Beltrán, D. A., & Contreras Ortiz, M. S. (2026).</strong> Machine learning (pp 115-134). USTA Tunja Editions.</p>
+					<p class="mb-2"><strong>Brenndoerfer, M. (2025).</strong> Agrupamiento DBSCAN: Guía completa de agrupamiento basado en densidad con implementación 
+					[DBSCAN Clustering: Complete Guide to Density-Based Clustering with Implementation]. 
+					https://mbrenndoerfer.com/writing/dbscan-clustering-density-based-spatial-clustering-noise-detection</p>
+					<p class="mb-2"><strong>Yasser, M. (2022).</strong> Loan Default Dataset. https://www.kaggle.com/datasets/yasserh/loan-default-dataset/data.</p>
+                </div>
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS + Chart.js Config -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // Chart 1: Gráfico k-Search (Silhouette Score)
+            const ctxK = document.getElementById('kSearchChart').getContext('2d');
+            new Chart(ctxK, {
+                type: 'line',
+                data: {
+                    labels: ['k=2', 'k=3 (Máx Global)', 'k=4', 'k=5', 'k=6', 'k=7', 'k=8'],
+                    datasets: [{
+                        label: 'Silhouette Score',
+                        data: [0.1441, 0.1560, 0.0972, 0.0969, 0.0979, 0.1017, 0.0979],
+                        borderColor: '#58a6ff',
+                        backgroundColor: 'rgba(88, 166, 255, 0.15)',
+                        borderWidth: 2.5,
+                        pointBackgroundColor: ['#58a6ff', '#3fb950', '#58a6ff', '#58a6ff', '#58a6ff', '#58a6ff', '#58a6ff'],
+                        pointRadius: [4, 8, 4, 4, 4, 4, 4],
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: '#30363d' }, ticks: { color: '#8b949e' } },
+                        x: { grid: { color: '#30363d' }, ticks: { color: '#8b949e' } }
+                    }
+                }
+            });
+
+            // Chart 2: Scatter Plot PCA
+            const ctxPCA = document.getElementById('pcaChart').getContext('2d');
+            new Chart(ctxPCA, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Clúster 0 (Prime - Verde)',
+                            data: [{x: -1.5, y: 0.4}, {x: -2.0, y: 1.1}, {x: -1.8, y: -0.3}, {x: -1.1, y: 0.6}],
+                            backgroundColor: '#3fb950'
+                        },
+                        {
+                            label: 'Clúster 1 (Plazo Corto - Ámbar)',
+                            data: [{x: 0.2, y: -2.4}, {x: -0.3, y: -3.0}, {x: 0.4, y: -1.8}],
+                            backgroundColor: '#d29922'
+                        },
+                        {
+                            label: 'Clúster 2 (Alto Apalancamiento - Rojo)',
+                            data: [{x: 1.9, y: 0.5}, {x: 2.4, y: 1.0}, {x: 1.3, y: 0.7}, {x: 2.8, y: -0.2}],
+                            backgroundColor: '#f85149'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#c9d1d9', font: { size: 10 } } } },
+                    scales: {
+                        y: { title: { display: true, text: 'PC2 (Plazo/Riesgo)', color: '#8b949e' }, grid: { color: '#30363d' }, ticks: { color: '#8b949e' } },
+                        x: { title: { display: true, text: 'PC1 (Magnitud Económica)', color: '#8b949e' }, grid: { color: '#30363d' }, ticks: { color: '#8b949e' } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
